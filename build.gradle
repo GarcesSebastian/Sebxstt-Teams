@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'io.papermc.paperweight.userdev' version '2.0.0-beta.17'
     id 'xyz.jpenilla.run-paper' version '2.3.1'
 }
@@ -8,6 +9,7 @@ group = 'com'
 version = '1.0-SNAPSHOT'
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven {
         name = "papermc"
@@ -24,6 +26,9 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.nextinventory:nextinventory:1.0.0'
+    shadow 'com.nextinventory:nextinventory:1.0.0'
+
     paperweight.paperDevBundle('1.21.4-R0.1-SNAPSHOT')
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("de.oliver:FancyHolograms:2.5.0")
@@ -37,6 +42,10 @@ tasks {
     // Your plugin's jar (or shadowJar if present) will be used automatically.
     minecraftVersion("1.21")
   }
+}
+
+tasks.named("shadowJar") {
+    archiveClassifier.set("") // ← esto hace que el JAR final no tenga `-all`
 }
 
 def targetJavaVersion = 21
@@ -69,8 +78,35 @@ processResources {
 def serverPluginsDir = file("C:/Users/Malik/Desktop/Server/plugins")
 def pluginJarName = "sebxstt-${version}.jar"
 
+tasks.register("stopped", Exec) {
+    commandLine "cmd", "/c", "echo", "Stopping server..."
+
+    doFirst {
+        println "Verificando si el puerto 25565 está en uso..."
+        try {
+            def result = ["cmd", "/c", "netstat -ano | findstr :25565"].execute()
+            def output = result.text.trim()
+            if (!output.isEmpty()) {
+                def line = output.readLines().find { it.contains("LISTENING") || it.contains("ESTABLISHED") }
+                if (line) {
+                    def pid = line.tokenize().last()
+                    println "Puerto 25565 está en uso por PID: $pid. Terminando proceso..."
+                    def kill = ["cmd", "/c", "taskkill /PID $pid /F"].execute()
+                    kill.waitFor()
+                    println "Proceso $pid terminado."
+                    Thread.sleep(2000)
+                }
+            } else {
+                println "Puerto 25565 libre."
+            }
+        } catch (Exception e) {
+            println "No se pudo verificar el puerto 25565: ${e.message}"
+        }
+    }
+}
+
 tasks.register("copyToServer", Copy) {
-    dependsOn "build"
+    dependsOn "shadowJar"
     from("$buildDir/libs/$pluginJarName")
     into(serverPluginsDir)
     doFirst {
@@ -82,7 +118,9 @@ tasks.register("copyToServer", Copy) {
 }
 
 tasks.register("runServerJar", Exec) {
-    dependsOn "copyToServer"
+    dependsOn(":nextinventory:publishToLocalRepo")
+    dependsOn("copyToServer")
+    dependsOn("stopped")
     workingDir = file("C:/Users/Malik/Desktop/Server")
 
     commandLine = [
@@ -114,27 +152,6 @@ tasks.register("runServerJar", Exec) {
     ignoreExitValue = true
 
     doFirst {
-        println "Verificando si el puerto 25565 está en uso..."
-        try {
-            def result = ["cmd", "/c", "netstat -ano | findstr :25565"].execute()
-            def output = result.text.trim()
-            if (!output.isEmpty()) {
-                def line = output.readLines().find { it.contains("LISTENING") || it.contains("ESTABLISHED") }
-                if (line) {
-                    def pid = line.tokenize().last()
-                    println "⚠ Puerto 25565 está en uso por PID: $pid. Terminando proceso..."
-                    def kill = ["cmd", "/c", "taskkill /PID $pid /F"].execute()
-                    kill.waitFor()
-                    println "Proceso $pid terminado."
-                    Thread.sleep(2000)
-                }
-            } else {
-                println "Puerto 25565 libre."
-            }
-        } catch (Exception e) {
-            println "No se pudo verificar el puerto 25565: ${e.message}"
-        }
-
         println "Ejecutando server.jar con configuración avanzada JVM"
     }
 

@@ -1,9 +1,9 @@
 package com.sebxstt;
 
+import com.nextinventory.enums.InventoryType;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import com.sebxstt.helpers.GroupPermissions;
-import com.sebxstt.instances.enums.InventoryType;
 import com.sebxstt.instances.enums.PlayerTypeGroup;
 import com.sebxstt.functions.utils.InPlayer;
 import com.sebxstt.instances.CheckPoint;
@@ -11,10 +11,10 @@ import com.sebxstt.instances.Main;
 import com.sebxstt.instances.PlayerConfig;
 import com.sebxstt.instances.PlayersGroup;
 import com.sebxstt.functions.utils.Lib;
-import com.sebxstt.instances.ingame.inventory.NextInventory;
-import com.sebxstt.instances.ingame.inventory.NextInventoryProvider;
-import com.sebxstt.instances.ingame.inventory.enums.InventorySizeType;
-import com.sebxstt.instances.ingame.inventory.instances.NextItem;
+import com.nextinventory.NextInventory;
+import com.nextinventory.NextInventoryProvider;
+import com.nextinventory.enums.InventorySizeType;
+import com.nextinventory.instances.NextItem;
 import com.sebxstt.managers.CommandManager;
 import com.sebxstt.providers.ConfigurationProvider;
 import com.sebxstt.providers.DataStoreProvider;
@@ -67,13 +67,18 @@ public class index extends JavaPlugin implements Listener {
 
         NextGUI = new NextInventory("Prueba", InventorySizeType.NORMAL, InventoryType.PAGINATION)
                 .pages(5);
-        NextItem bt = NextGUI.CustomItem("Diamond Unlimited Copy", "Get Diamond Unlimited", Material.DIAMOND, 2).button(true).insert(1);
-        NextItem paper = NextGUI.CustomItem("Papel Modificado", "Papel unico en su especie", Material.PAPER, 5).draggable(false).insert(2);
+        NextItem bt = NextGUI.CustomItem("Diamond Unlimited Copy", "Get Diamond Unlimited", Material.DIAMOND, 2).button(true).insert();
+        NextItem paper = NextGUI.CustomItem("Papel Modificado", "Papel unico en su especie", Material.PAPER, 5).draggable(false).insert();
+        NextItem teleport = NextGUI.CustomItem("Teleport Item", "Mueve un item", Material.DAMAGED_ANVIL, 1).button(true).insert();
 
         bt.onClick(player -> {
             player.sendMessage(mm.deserialize(
                     "<blue>you was win x999 DIAMONDS</blue>"
             ));
+        });
+
+        teleport.onClick(player -> {
+            paper.move(12, NextGUI.getPages().size());
         });
 
         NextGUI.onBack(player -> {
