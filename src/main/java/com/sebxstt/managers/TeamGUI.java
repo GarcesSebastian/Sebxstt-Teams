@@ -16,11 +16,11 @@ public class TeamGUI {
     public static final NextInventory NextGUI = NextInventory.builder()
             .title("Team Manager")
             .type(InventoryType.PAGINATION)
-            .size(InventorySize.LARGE);
+            .size(InventorySize.NORMAL)
+            .historable(true)
+            .pages(4); // Added 4 pages - then inventory pages total is 5 with default page
 
     public static void setup() {
-        NextGUI.pages(4); // Create Inventory GUI with 4 pages
-
 //        NextGUI.getBack().setMaterialType(Material.APPLE); // Change Material Type of Back Item in Pagination
 //        NextGUI.getCurrent().setMaterialType(Material.DIAMOND); // Change Material Type of Current Item in Pagination
 //        NextGUI.getNext().setMaterialType(Material.ACACIA_LEAVES); // Change Material Type of Next Item in Pagination
@@ -32,9 +32,7 @@ public class TeamGUI {
         NextItem WarpsButton = NextGUI.CustomItem("Warps Team", "", Material.BLUE_STAINED_GLASS, 3)
                 .button(true) // Is Button
                 .cycle(List.of(
-                        Material.AIR,
                         Material.BLUE_STAINED_GLASS_PANE,
-                        Material.AIR,
                         Material.RED_STAINED_GLASS_PANE
                 ), 10L) // Swap between some materials
                 .insert(); // Insert into inventory

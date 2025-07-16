@@ -1,185 +1,247 @@
 # Sebxstt
 
-¡Bienvenido a la documentación de **Sebxstt**! Este es un plugin para PaperMC que implementa sistemas avanzados de checkpoints y grupos, permitiendo a los jugadores crear puntos de teletransporte personales y gestionar equipos con diferentes roles y funcionalidades colaborativas.
+<div align="center">
+
+<img src="https://github.com/GarcesSebastian/NextInventory/blob/main/src/main/java/com/sebxstt/nextinventory/assets/logo.png?raw=true" width="150"/>
+
+[![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.4-brightgreen.svg)](https://www.minecraft.net/)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/GarcesSebastian/Sebxstt)
+[![PaperMC](https://img.shields.io/badge/API-PaperMC-yellow.svg)](https://papermc.io/)
+[![Java](https://img.shields.io/badge/Java-21-red.svg)](https://www.oracle.com/java/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**An advanced PaperMC plugin that implements checkpoint systems, teams, and collaborative tools**
+
+</div>
 
 ---
 
-## Índice
+## Index
 
-1. [Características Principales](#características-principales)
-2. [Instalación](#instalación)
-3. [Configuración](#configuración)
-4. [Sistema de Grupos](#sistema-de-grupos)
-   - [Roles y Funcionalidades](#roles-y-funcionalidades)
-   - [Chat de Grupo](#chat-de-grupo)
-   - [Warps de Grupo](#warps-de-grupo)
-5. [Comandos](#comandos)
-   - [Comandos de Checkpoint](#comandos-de-checkpoint)
-   - [Comandos de Grupo](#comandos-de-grupo)
-   - [Comandos de Warps](#comandos-de-warps)
-   - [Comandos de Jugador](#comandos-de-jugador)
-6. [Almacenamiento de Datos](#almacenamiento-de-datos)
-
----
-
-## Características Principales
-
-- **Sistema de Checkpoints**: Crea puntos personales de teletransporte con nombres personalizados.
-- **Sistema de Grupos**: Permite crear y gestionar equipos con diferentes roles y colores distintivos.
-- **Chat Privado de Grupo**: Comunícate exclusivamente con los miembros de tu grupo mediante un canal privado.
-- **Warps de Grupo**: Establece y comparte puntos de teletransporte para todo el equipo.
-- **Invitaciones a Grupos**: Sistema de invitaciones con aceptación/rechazo por parte de los jugadores.
-- **Regreso al Punto de Muerte**: Comando para volver al lugar donde moriste por última vez (con cooldown configurable).
-- **Almacenamiento Optimizado**: Toda la información se guarda en un único archivo JSON.
-- **Sistema de Compartición de EXP**: Distribución automática de experiencia entre miembros cercanos del mismo grupo.
+1. [Main Features](#main-features)
+2. [Installation](#installation)
+3. [Configuration](#configuration)
+4. [Team System](#team-system)
+   - [Roles and Functionality](#roles-and-functionality)
+   - [Team Chat](#team-chat)
+   - [Team Warps](#team-warps)
+5. [Graphical Interface (GUI)](#graphical-interface-gui)
+6. [Commands](#commands)
+   - [Checkpoint Commands](#checkpoint-commands)
+   - [Team Commands](#team-commands)
+   - [Warp Commands](#warp-commands)
+   - [Player Commands](#player-commands)
+7. [Data Storage](#data-storage)
+8. [Roadmap and Development](#roadmap-and-development)
 
 ---
 
-## Instalación
+## Main Features
 
-1. Descarga el archivo `Sebxstt-1.0.0.jar` desde la página de releases.
-2. Coloca el archivo `.jar` en la carpeta `plugins/` de tu servidor PaperMC.
-3. Reinicia el servidor. Se creará automáticamente la carpeta `plugins/Sebxstt/`.
+- **Checkpoint System**: Create personal teleport points with custom names.
+- **Team System**: Create and manage teams with different roles and distinctive colors.
+- **Team Private Chat**: ✅ Communicate exclusively with your team members through a private channel.
+- **Team Warps**: ✅ Establish and share teleport points for the entire team.
+- **Team Invitations**: Invitation system with acceptance/rejection by players.
+- **Return to Death Point**: Command to return to your last death location (with configurable cooldown).
+- **Optimized Storage**: All information is saved in a single JSON file.
+- **EXP Sharing System**: Automatic experience distribution among nearby team members.
+- **Interactive Graphical Interface**: 🆕 Visual menu for team management using NextInventory.
+- **Group Teleportation**: ✅ Teleport all members or members with a specific role to team warps.
 
 ---
 
-## Configuración
+## Installation
 
-El plugin utiliza un archivo `config.yml` simple con los siguientes parámetros:
+1. Download the `Sebxstt-1.0.0.jar` file from the releases page.
+2. Place the `.jar` file in the `plugins/` folder of your PaperMC server.
+3. Restart the server. The `plugins/Sebxstt/` folder will be automatically created.
+4. Verify that the NextInventory library is correctly integrated for the GUI system.
+
+---
+
+## Configuration
+
+The plugin uses a simple `config.yml` file with the following parameters:
 ```yaml
-CooldownLastDeathCheckPoint: 1  # Tiempo de cooldown en minutos para el comando de retorno al último punto de muerte
-MaxCheckPoints: 3               # Número máximo de checkpoints que puede tener un jugador
-fileDataSaved: "data"           # Nombre del archivo de datos
-AutoSaveTime: 5                 # Intervalo de autoguardado en minutos
+CooldownLastDeathCheckPoint: 1  # Cooldown time in minutes for the last death point return command
+MaxCheckPoints: 3               # Maximum number of checkpoints a player can have
+fileDataSaved: "data"           # Name of the data file
+AutoSaveTime: 5                 # Auto-save interval in minutes
 ```
 
+All persistent data is saved in the JSON file specified in the configuration.
+
 ---
 
-## Sistema de Grupos
+## Team System
 
-El plugin implementa un sistema de grupos que permite a los jugadores formar equipos con diferentes colores distintivos. Los grupos tienen un sistema de roles para administrar los permisos.
+The plugin implements a team system that allows players to form teams with different distinctive colors. Teams have a role system to manage permissions and features like private chat, shared warps, and member management.
 
-### Roles y Funcionalidades
+### Roles and Functionality
 
-Existen 4 roles en el sistema de grupos:
+There are 4 roles in the team system:
 
-- **LEADER**: Propietario del grupo con control total sobre todas las funcionalidades.
-- **OFFICER**: Rol con permisos amplios para gestionar el grupo y sus miembros.
-- **MEMBER**: Miembro regular que puede utilizar las funcionalidades básicas del grupo.
-- **GUEST**: Miembro con permisos limitados, principalmente de visualización.
+- **LEADER**: Team owner with complete control over all functionality.
+- **OFFICER**: Role with extensive permissions to manage the team and its members.
+- **MEMBER**: Regular member who can use the basic team functionality.
+- **GUEST**: Member with limited permissions, mainly viewing permissions.
 
-### Permisos por Rol
+### Permissions by Role
 
-| Permiso | LEADER | OFFICER | MEMBER | GUEST |
+| Permission | LEADER | OFFICER | MEMBER | GUEST |
 |---------|:------:|:-------:|:-------:|:----------:|
-| Gestionar miembros (invitar/expulsar) | ✅ | ✅ | ❌ | ❌ |
-| Cambiar roles de miembros | ✅ | ✅ | ❌ | ❌ |
-| Disolver grupo | ✅ | ❌ | ❌ | ❌ |
-| Gestionar warps (crear/eliminar) | ✅ | ✅ | ❌ | ❌ |
-| Usar warps | ✅ | ✅ | ✅ | ✅ |
-| Teleportar a todos miembros | ✅ | ✅ | ❌ | ❌ |
-| Acceder al almacenamiento | ✅ | ✅ | ✅ | ✅ |
-| Usar chat de grupo | ✅ | ✅ | ✅ | ✅ |
+| Manage members (invite/kick) | ✅ | ✅ | ❌ | ❌ |
+| Change member roles | ✅ | ✅ | ❌ | ❌ |
+| Disband team | ✅ | ❌ | ❌ | ❌ |
+| Manage warps (create/delete) | ✅ | ✅ | ❌ | ❌ |
+| Use warps | ✅ | ✅ | ✅ | ✅ |
+| Teleport all members | ✅ | ✅ | ❌ | ❌ |
+| Access storage | ✅ | ✅ | ✅ | ✅ |
+| Use team chat | ✅ | ✅ | ✅ | ✅ |
 
-### Chat de Grupo
+### Team Chat
 
-El plugin incorpora un sistema de chat privado de grupo que permite a los miembros comunicarse exclusivamente entre ellos:
+The plugin incorporates a private team chat system that allows members to communicate exclusively with each other:
 
-- Se activa/desactiva con el comando `/gchat on|off`
-- Los mensajes son visibles solo para los miembros del grupo
-- El formato del mensaje incluye el nombre y color del grupo
-- El estado del chat grupal persiste entre sesiones
+- It can be activated/deactivated with the `/gchat on|off` command
+- Messages are visible only to team members
+- The message format includes the team name and color
+- Team chat status persists between sessions
 
-### Warps de Grupo
+### Team Warps
 
-Los grupos pueden establecer puntos de teletransporte compartidos:
+Teams can establish shared teleport points:
 
-- Cada grupo puede crear múltiples warps en diferentes ubicaciones
-- Los warps son accesibles para todos los miembros del grupo
-- Miembros con permisos avanzados pueden teleportar a todos los miembros del grupo a un warp
-- También es posible teleportar solo a miembros con un cargo específico
+- Each team can create multiple warps in different locations
+- Warps are accessible to all team members
+- Members with advanced permissions can teleport all team members to a warp
+- It's also possible to teleport only members with a specific role
 
 ---
 
-## Comandos
+## Commands
 
-### Comandos de Checkpoint
+### Checkpoint Commands
 
-| Comando | Alias | Descripción | Permisos |
+| Command | Alias | Description | Permissions |
 |---------|-------|-------------|----------|
-| `/checkpoint save <nombre>` | `/cp save` | Guarda un checkpoint en tu ubicación actual | `sebxstt.command.checkpoint` |
-| `/checkpoint delete <nombre>` | `/cp delete` | Elimina un checkpoint guardado | `sebxstt.command.checkpoint` |
-| `/checkpoint tp <nombre>` | `/cp tp` | Te teletransporta a un checkpoint guardado | `sebxstt.command.checkpoint` |
-| `/checkpoint list` | `/cp list` | Muestra todos tus checkpoints guardados | `sebxstt.command.checkpoint` |
+| `/checkpoint save <name>` | `/cp save` | Saves a checkpoint at your current location | `sebxstt.command.checkpoint` |
+| `/checkpoint delete <name>` | `/cp delete` | Deletes a saved checkpoint | `sebxstt.command.checkpoint` |
+| `/checkpoint tp <name>` | `/cp tp` | Teleports you to a saved checkpoint | `sebxstt.command.checkpoint` |
+| `/checkpoint list` | `/cp list` | Shows all your saved checkpoints | `sebxstt.command.checkpoint` |
 
-### Comandos de Grupo
+### Team Commands
 
-| Comando | Alias | Descripción | Requisitos |
+| Command | Alias | Description | Requirements |
 |---------|-------|-------------|------------|
-| `/gcreate <color> <nombre>` | `/gc` | Crea un nuevo grupo con color y nombre | `sebxstt.command.group` |
-| `/ginfo` | `/gi` | Muestra la información actual del grupo | Miembro de grupo |
-| `/gleave` | `/lv` | Abandona tu grupo actual | No ser LEADER |
-| `/ginvite <cargo> <jugador>` | `/iv` | Invita a un jugador con cargo específico | LEADER/OFFICER |
-| `/gkick <jugador>` | `/gk` | Expulsa a un jugador del grupo | LEADER/OFFICER |
-| `/gdisband` | `/gd` | Disuelve el grupo completamente | Solo LEADER |
-| `/grole <cargo> <jugador>` | `/gr` | Cambia el cargo de un miembro | LEADER/OFFICER |
-| `/gstorage` | `/st` | Abre el almacenamiento compartido del grupo | Miembro de grupo |
-| `/gchat <on\|off>` | `/ch` | Activa/desactiva el chat de grupo | Miembro de grupo |
+| `/gcreate <color> <name>` | `/gc` | Creates a new team with color and name | `sebxstt.command.group` |
+| `/ginfo` | `/gi` | Shows current team information | Team member |
+| `/gleave` | `/lv` | Leave your current team | Not LEADER |
+| `/ginvite <role> <player>` | `/iv` | Invites a player with specific role | LEADER/OFFICER |
+| `/gkick <player>` | `/gk` | Kicks a player from the team | LEADER/OFFICER |
+| `/gdisband` | `/gd` | Completely dissolves the team | LEADER only |
+| `/grole <role> <player>` | `/gr` | Changes a member's role | LEADER/OFFICER |
+| `/gstorage` | `/st` | Opens the team's shared storage | Team member |
+| `/gchat <on\|off>` | `/ch` | Activates/deactivates team chat | Team member |
 
-### Comandos de Warps
+### Warp Commands
 
-| Comando | Descripción | Requisitos |
+| Command | Description | Requirements |
 |---------|-------------|------------|
-| `/gwarp create <nombre>` | Crea un warp en tu ubicación actual | LEADER/OFFICER |
-| `/gwarp delete <nombre>` | Elimina un warp existente | LEADER/OFFICER |
-| `/gwarp list` | Muestra todos los warps del grupo | Miembro de grupo |
-| `/gwarp tp <nombre>` | Te teletransporta al warp especificado | Miembro de grupo |
-| `/gwarp all <nombre>` | Teletransporta a todos los miembros al warp | LEADER/OFFICER |
-| `/gwarp post <cargo> <nombre>` | Teletransporta a miembros con cargo específico | LEADER/OFFICER |
+| `/gwarp create <name>` | Creates a warp at your current location | LEADER/OFFICER |
+| `/gwarp delete <name>` | Deletes an existing warp | LEADER/OFFICER |
+| `/gwarp list` | Shows all team warps | Team member |
+| `/gwarp tp <name>` | Teleports you to the specified warp | Team member |
+| `/gwarp all <name>` | Teleports all members to the warp | LEADER/OFFICER |
+| `/gwarp post <role> <name>` | Teleports members with a specific role | LEADER/OFFICER |
 
-### Comandos de Jugador
+### Player Commands
 
-| Comando | Alias | Descripción | Permisos |
+| Command | Alias | Description | Permissions |
 |---------|-------|-------------|----------|
-| `/stats` | `/est` | Muestra estadísticas del jugador | `sebxstt.command.player` |
-| `/clearteams` | - | Limpia equipos del jugador | `sebxstt.command.player` |
-| `/return` | - | Te teletransporta a tu último punto de muerte | `sebxstt.command.player` |
-| `/invitations` | `/inv` | Gestiona invitaciones pendientes a grupos | `sebxstt.command.player` |
+| `/stats` | `/est` | Shows player statistics | `sebxstt.command.player` |
+| `/clearteams` | - | Clears player teams | `sebxstt.command.player` |
+| `/return` | - | Teleports you to your last death point | `sebxstt.command.player` |
+| `/invitations` | `/inv` | Manages pending team invitations | `sebxstt.command.player` |
 
 ---
 
-## Almacenamiento de Datos
+## Graphical Interface (GUI)
 
-Toda la información del plugin se almacena en un único archivo JSON definido en la configuración (por defecto `data.json`). Este archivo contiene:
+The plugin incorporates an advanced interactive graphical interface system using the NextInventory library, developed specifically for this project:
 
-- Información de los jugadores y sus configuraciones
-- Checkpoints guardados
-- Grupos creados y sus miembros
-- Roles de los miembros en cada grupo
-- Warps de grupo
-- Configuración del chat de grupo
+### GUI System
 
-El plugin guarda los datos automáticamente en los siguientes momentos:
+- **Team Menu**: Quick visual access to all team functions through custom inventories
+- **Visual Member Management**: View and manage team members with a click
+- **Page Navigation**: Pagination system to organize large amounts of information
+- **Interactive Elements**: Buttons with visual effects and animations to improve user experience
+- **Animated Icons**: Elements that alternate or cycle between materials to highlight important actions
 
-- Al desconectarse un jugador
-- Al apagar el servidor
-- Periódicamente según el intervalo definido en la configuración (AutoSaveTime)
+### Interface Features
+
+- **Pagination**: Navigate between different menu sections (members, warps, settings)
+- **Animations**: Buttons with visual effects like material alternation
+- **Callbacks**: Custom events for each interaction
+- **Modular Design**: Expandable system to add new functionality
+
+To open the team management menu, use the `/gteam` command or its alias `/gt`.
+
+## Data Storage
+
+All plugin information is stored in a single JSON file defined in the configuration (by default `data.json`). This file contains:
+
+- Player information and settings
+- Saved checkpoints
+- Created teams and their members
+- Member roles in each team
+- Team warps
+- Team chat configuration
+
+The plugin automatically saves data at the following times:
+
+- When a player disconnects
+- When the server shuts down
+- Periodically according to the interval defined in the configuration (AutoSaveTime)
+
+## Roadmap and Development
+
+The plugin is under active development with the following features planned for future versions:
+
+| Feature | Status |
+|--------------|--------|
+| Team Private Chat | ✅ Implemented |
+| Team Warps | ✅ Implemented |
+| Interactive GUI Menu | 🔄 In development |
+| Voting System | 📝 Planned |
+| Team Events | 📝 Planned |
+
+### Technologies Used
+
+- **[NextInventory](https://github.com/GarcesSebastian/NextInventory)**: Custom library for creating interactive graphical interfaces
+- **Paper API**: For complete integration with PaperMC servers
+- **MiniMessage**: For advanced text and message formatting
 
 ---
 
-## Contribuir
+## Contribute
 
-Si encuentras algún problema o tienes sugerencias para mejorar el plugin, por favor abre un issue en el repositorio del proyecto.
+If you find any issues or have suggestions to improve the plugin, please open an issue in the project repository.
 
-## Licencia
+## License
 
-Este proyecto está bajo la licencia MIT. Ver el archivo LICENSE para más detalles.
+This project is licensed under the MIT License. See the LICENSE file for more details.
 
 ---
+
+<div align="center">
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![PaperMC](https://img.shields.io/badge/API-PaperMC-yellow.svg)
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.4-green.svg)
 ![Java](https://img.shields.io/badge/Java-21-red.svg)
 
-&copy; 2025 Sebxstt - Desarrollado para servidores PaperMC
+&copy; 2025 Sebxstt - Developed for PaperMC servers
+
+</div>
