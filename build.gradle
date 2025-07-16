@@ -23,11 +23,12 @@ repositories {
         name = "dmulloy2-repo"
         url = uri("https://repo.dmulloy2.net/repository/public/")
     }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    implementation 'com.nextinventory:nextinventory:1.0.0'
-    shadow 'com.nextinventory:nextinventory:1.0.0'
+    implementation 'com.github.GarcesSebastian:nextinventory:1.0.0'
+    shadow 'com.github.GarcesSebastian:nextinventory:1.0.0'
 
     paperweight.paperDevBundle('1.21.4-R0.1-SNAPSHOT')
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")

@@ -1,6 +1,6 @@
 package com.sebxstt;
 
-import com.nextinventory.enums.InventoryType;
+import com.sebxstt.managers.TeamGUI;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import com.sebxstt.helpers.GroupPermissions;
@@ -11,10 +11,7 @@ import com.sebxstt.instances.Main;
 import com.sebxstt.instances.PlayerConfig;
 import com.sebxstt.instances.PlayersGroup;
 import com.sebxstt.functions.utils.Lib;
-import com.nextinventory.NextInventory;
-import com.nextinventory.NextInventoryProvider;
-import com.nextinventory.enums.InventorySizeType;
-import com.nextinventory.instances.NextItem;
+import com.sebxstt.nextinventory.NextInventoryProvider;
 import com.sebxstt.managers.CommandManager;
 import com.sebxstt.providers.ConfigurationProvider;
 import com.sebxstt.providers.DataStoreProvider;
@@ -27,7 +24,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,8 +45,6 @@ public class index extends JavaPlugin implements Listener {
     public static Main mainData = new Main();
     public static final Map<UUID, ArmorStand> nameTags = new HashMap<>();
     public static final MiniMessage mm = MiniMessage.miniMessage();
-    public static NextInventory NextGUI;
-
 
     @Override
     public void onEnable() {
@@ -65,33 +59,7 @@ public class index extends JavaPlugin implements Listener {
             CommandManager.registerAll(event);
         });
 
-        NextGUI = new NextInventory("Prueba", InventorySizeType.NORMAL, InventoryType.PAGINATION)
-                .pages(5);
-        NextItem bt = NextGUI.CustomItem("Diamond Unlimited Copy", "Get Diamond Unlimited", Material.DIAMOND, 2).button(true).insert();
-        NextItem paper = NextGUI.CustomItem("Papel Modificado", "Papel unico en su especie", Material.PAPER, 5).draggable(false).insert();
-        NextItem teleport = NextGUI.CustomItem("Teleport Item", "Mueve un item", Material.DAMAGED_ANVIL, 1).button(true).insert();
-
-        bt.onClick(player -> {
-            player.sendMessage(mm.deserialize(
-                    "<blue>you was win x999 DIAMONDS</blue>"
-            ));
-        });
-
-        teleport.onClick(player -> {
-            paper.move(12, NextGUI.getPages().size());
-        });
-
-        NextGUI.onBack(player -> {
-            player.sendMessage(mm.deserialize(
-                    "Has retrocedido"
-            ));
-        });
-
-        NextGUI.onNext(player -> {
-            player.sendMessage(mm.deserialize(
-                    "Has avanzado"
-            ));
-        });
+        TeamGUI.setup();
     }
 
     @Override

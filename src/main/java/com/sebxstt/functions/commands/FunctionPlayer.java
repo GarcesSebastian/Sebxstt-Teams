@@ -1,7 +1,6 @@
 package com.sebxstt.functions.commands;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import com.sebxstt.functions.utils.InPlayer;
@@ -9,15 +8,11 @@ import com.sebxstt.functions.utils.Lib;
 import com.sebxstt.instances.PlayerConfig;
 import com.sebxstt.instances.PlayersGroup;
 import com.sebxstt.instances.RequestGroup;
-import com.sebxstt.instances.http.FetchProfile;
-import com.sebxstt.instances.http.FetchTextures;
-import com.nextinventory.NextInventory;
-import com.nextinventory.NextInventoryProvider;
-import com.sebxstt.managers.HttpManager;
+import com.sebxstt.nextinventory.NextInventory;
+import com.sebxstt.nextinventory.NextInventoryProvider;
 import com.sebxstt.providers.PluginProvider;
 import com.sebxstt.serialize.data.PlayerConfigData;
 import com.sebxstt.serialize.data.PlayerGroupData;
-import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
@@ -43,6 +38,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import static com.sebxstt.index.*;
+import static com.sebxstt.managers.TeamGUI.NextGUI;
 import static com.sebxstt.providers.DataStoreProvider.DS;
 
 public class FunctionPlayer {
@@ -50,6 +46,11 @@ public class FunctionPlayer {
         CommandSender senderRaw = ctx.getSource().getSender();
         if(!(senderRaw instanceof Player p)) return;
         OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(target);
+
+        PlayerConfig pc = Lib.getPlayerConfig(p);
+        if (pc == null) return;
+        PlayersGroup pg = InPlayer.group(pc.getCurrentGroup());
+        if (pg == null) return;
         NextGUI.open(offPlayer.getUniqueId());
     }
 
