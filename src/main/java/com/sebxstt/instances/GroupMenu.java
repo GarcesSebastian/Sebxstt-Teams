@@ -1,6 +1,8 @@
 package com.sebxstt.instances;
 
 import com.sebxstt.functions.utils.InPlayer;
+import com.sebxstt.managers.menus.InfoPageManager;
+import com.sebxstt.managers.menus.WarpsPageManager;
 import com.sebxstt.nextinventory.NextInventory;
 import com.sebxstt.nextinventory.enums.InventorySize;
 import com.sebxstt.nextinventory.enums.InventoryType;
@@ -32,6 +34,9 @@ public class GroupMenu {
 
     // Buttons Iterable
     public ArrayList<NextItem> Buttons = new ArrayList<>();
+
+    // Managers
+    public WarpsPageManager warpsPageManager;
 
     public GroupMenu(String title, UUID group) {
         this.title = title;
@@ -99,20 +104,21 @@ public class GroupMenu {
             }
         }
 
+        this.warpsPageManager = new WarpsPageManager(this.group, NextGUI);
+
         this.execute();
     }
 
     private void execute() {
         this.InfoButton.onClick(event -> {
-            Player player = event.getPlayer();
-            this.RenderInfoPage();
+            InfoPageManager.RenderInfoPage(this.group, NextGUI);
             NextGUI.current(2);
             this.BackButton.move(20, 2);
-            System.out.println("[GroupMenu] Show Info Group to " + player.getName());
         });
 
         this.WarpsButton.onClick(event -> {
             Player player = event.getPlayer();
+            this.warpsPageManager.RenderWarpsPage();
             NextGUI.current(3);
             this.BackButton.move(20, 3);
             System.out.println("[GroupMenu] Show Warps Group to " + player.getName());
@@ -150,56 +156,6 @@ public class GroupMenu {
             NextGUI.current(1);
         });
     }
-
-    private void RenderInfoPage() {
-        PlayersGroup group = InPlayer.group(this.group);
-
-        if (group == null) {
-            System.out.println("[GroupMenu] [ERROR] Group not found for menu ID: " + this.group);
-            return;
-        }
-
-//        NextGUI.CustomItem("Owner", InPlayer.name(group.getOwner()), Material.PLAYER_HEAD, 0)
-//                .insert(2).headOnline("luis").draggable(false);
-
-        NextGUI.CustomItem("Owner", InPlayer.name(group.getOwner()), Material.PLAYER_HEAD, 0)
-                .insert(2).head(InPlayer.name(group.getOwner())).draggable(false);
-
-        NextGUI.CustomItem("Level", "Level: " + group.level, Material.EXPERIENCE_BOTTLE, 1)
-                .insert(2).draggable(false);
-
-        String colorName = group.getColor().name().toLowerCase();
-        NextGUI.CustomItem("Group Color", colorName, Material.valueOf(group.getColor().name() + "_WOOL"), 2)
-                .insert(2).draggable(false);
-
-        String members = group.getMembers().isEmpty()
-                ? "No members"
-                : group.getMembers().stream()
-                .map(InPlayer::name).sorted()
-                .reduce((a, b) -> a + ", " + b).orElse("");
-
-        NextGUI.CustomItem("Members", members, Material.BOOK, 7)
-                .insert(2).draggable(false);
-
-        String allies = group.allies.isEmpty()
-                ? "No allies"
-                : group.allies.stream()
-                .map(PlayersGroup::getName).sorted()
-                .reduce((a, b) -> a + ", " + b).orElse("");
-
-        NextGUI.CustomItem("Allies", allies, Material.EMERALD, 8)
-                .insert(2).draggable(false);
-
-        String enemies = group.enemies.isEmpty()
-                ? "No enemies"
-                : group.enemies.stream()
-                .map(PlayersGroup::getName).sorted()
-                .reduce((a, b) -> a + ", " + b).orElse("");
-
-        NextGUI.CustomItem("Enemies", enemies, Material.BLAZE_POWDER, 9)
-                .insert(2).draggable(false);
-    }
-
     public void open(Player player) {
         this.NextGUI.open(player.getUniqueId());
     }
@@ -210,5 +166,6 @@ public class GroupMenu {
 
     public void setGroup(UUID group) {
         this.group = group;
+        this.warpsPageManager.setGroup(group);
     }
 }
