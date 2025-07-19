@@ -560,4 +560,17 @@ public class FunctionGroup {
             p.sendMessage(mm.deserialize(line));
         }
     }
+
+    public static void ShowMenu(CommandContext<CommandSourceStack> ctx) {
+        var senderRaw = ctx.getSource().getSender();
+        if (!(senderRaw instanceof Player p)) return;
+
+        PlayersGroup pg = Lib.FindPlayerInGroup(p.getName());
+        if (pg == null) {
+            p.sendMessage(mm.deserialize("<red>No perteneces a ningún grupo.</red>"));
+            return;
+        }
+
+        pg.menu.open(p);
+    }
 }

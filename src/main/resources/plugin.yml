@@ -3,8 +3,9 @@ version: 1.0.0
 main: com.sebxstt.index
 description: Plugin Sebxstt
 author: Sebxstt
-api-version: '1.21.4'
+api-version: '1.21'
 depend: [ProtocolLib]
+softdepend: [Floodgate]
 commands:
   group:
     description: Gestión de grupos

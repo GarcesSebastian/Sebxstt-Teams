@@ -2,6 +2,7 @@ package com.sebxstt.functions.commands;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.context.CommandContext;
+import com.sebxstt.nextinventory.enums.InventoryType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import com.sebxstt.functions.utils.InPlayer;
 import com.sebxstt.functions.utils.Lib;
@@ -38,7 +39,6 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import static com.sebxstt.index.*;
-import static com.sebxstt.managers.TeamGUI.NextGUI;
 import static com.sebxstt.providers.DataStoreProvider.DS;
 
 public class FunctionPlayer {
@@ -51,42 +51,25 @@ public class FunctionPlayer {
         if (pc == null) return;
         PlayersGroup pg = InPlayer.group(pc.getCurrentGroup());
         if (pg == null) return;
-        NextGUI.open(offPlayer.getUniqueId());
     }
 
-    public static void test2(CommandContext<CommandSourceStack> ctx, String target) {
-        Player plr = Bukkit.getPlayerExact(target);
-        assert plr != null;
+    public static void npc(CommandContext<CommandSourceStack> ctx, String name) throws Exception {
+        if (!(ctx.getSource().getSender() instanceof Player viewer)) return;
+        GameProfile profile = new GameProfile(UUID.randomUUID(), name);
 
-        NextInventory nextInventory = NextInventoryProvider.nextInventoryList.stream()
-                .filter(iv -> iv.getPlayers().contains(plr.getUniqueId()))
-                .findFirst().orElse(null);
+        MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
+        ServerLevel world = ((CraftWorld) viewer.getWorld()).getHandle();
+        ServerPlayer npc = new ServerPlayer(server, world, profile, ClientInformation.createDefault());
+        Location loc = viewer.getLocation();
+        npc.setPos(loc.getX(), loc.getY(), loc.getZ());
 
-        if (nextInventory == null) throw new IllegalStateException("Not found nextInventory by id player " + plr.getUniqueId());
+        ServerGamePacketListenerImpl conn = ((CraftPlayer) viewer).getHandle().connection;
+        server.getPlayerList().placeNewPlayer(conn.connection, npc, CommonListenerCookie.createInitial(profile, true));
 
-        nextInventory.getItems().forEach(item -> {
-            item.setName(UUID.randomUUID().toString().substring(0, 8));
-            item.draggable(true);
-        });
+        conn.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, npc));
+        conn.send(new ClientboundAddEntityPacket(npc, null));
+        conn.send(new ClientboundSetEntityDataPacket(npc.getId(), null));
     }
-
-        public static void npc(CommandContext<CommandSourceStack> ctx, String name) throws Exception {
-            if (!(ctx.getSource().getSender() instanceof Player viewer)) return;
-            GameProfile profile = new GameProfile(UUID.randomUUID(), name);
-
-            MinecraftServer server = ((CraftServer) Bukkit.getServer()).getServer();
-            ServerLevel world = ((CraftWorld) viewer.getWorld()).getHandle();
-            ServerPlayer npc = new ServerPlayer(server, world, profile, ClientInformation.createDefault());
-            Location loc = viewer.getLocation();
-            npc.setPos(loc.getX(), loc.getY(), loc.getZ());
-
-            ServerGamePacketListenerImpl conn = ((CraftPlayer) viewer).getHandle().connection;
-            server.getPlayerList().placeNewPlayer(conn.connection, npc, CommonListenerCookie.createInitial(profile, true));
-
-            conn.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, npc));
-            conn.send(new ClientboundAddEntityPacket(npc, null));
-            conn.send(new ClientboundSetEntityDataPacket(npc.getId(), null));
-        }
 
     public static void ClearTeams(CommandContext<CommandSourceStack> ctx) {
         var senderRaw = ctx.getSource().getSender();

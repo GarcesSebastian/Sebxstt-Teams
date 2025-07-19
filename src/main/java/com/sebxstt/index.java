@@ -1,6 +1,5 @@
 package com.sebxstt;
 
-import com.sebxstt.managers.TeamGUI;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import com.sebxstt.helpers.GroupPermissions;
@@ -58,8 +57,6 @@ public class index extends JavaPlugin implements Listener {
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             CommandManager.registerAll(event);
         });
-
-        TeamGUI.setup();
     }
 
     @Override

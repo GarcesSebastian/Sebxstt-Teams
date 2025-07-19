@@ -31,6 +31,7 @@ public class PlayersGroup {
     public int level = 1;
     public ChatColor color;
     public StorageTeam storage;
+    public GroupMenu menu;
 
     public ArrayList<PlayersGroup> enemies = new ArrayList<>();
     public ArrayList<PlayersGroup> allies = new ArrayList<>();
@@ -62,6 +63,8 @@ public class PlayersGroup {
         this.TargetMembers();
 
         this.storage = new StorageTeam(18, this);
+        System.out.println("[PlayersGroup] Debug Setter ID " + this.id);
+        this.menu = new GroupMenu("Menu Grupal " + this.name, this.id);
     }
 
     public void addMember(Player member, PlayerTypeGroup post) {
@@ -236,6 +239,7 @@ public class PlayersGroup {
 
     public void setId(UUID id) {
         this.id = id;
+        this.menu.setGroup(id);
     }
     public void setName(String name)          { this.name = name; }
     public void setOwner(UUID owner)        { this.owner = owner; }

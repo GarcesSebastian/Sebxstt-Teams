@@ -26,6 +26,13 @@ public class CommandGroup {
                 List.of("gc")
         );
 
+        cmds.register(Commands.literal("gmenu")
+                .executes(ctx -> {
+                    FunctionGroup.ShowMenu(ctx);
+                    return 1;
+                }).build()
+        );
+
         cmds.register(Commands.literal("gchat")
                         .then(Commands.argument("estado", StringArgumentType.word())
                                 .suggests(Suggest.OptionsSuggestions(PluginProvider.optionsStates))
