@@ -3,6 +3,7 @@ package com.sebxstt.managers.menus;
 import com.sebxstt.functions.utils.InPlayer;
 import com.sebxstt.instances.PlayersGroup;
 import com.sebxstt.instances.WarpPoint;
+import com.sebxstt.nextinventory.InventoryHelper;
 import com.sebxstt.nextinventory.NextInventory;
 import com.sebxstt.nextinventory.enums.InventorySize;
 import com.sebxstt.nextinventory.enums.InventoryType;
@@ -11,6 +12,7 @@ import com.sebxstt.serialize.data.PlayerGroupData;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static com.sebxstt.index.mm;
@@ -38,9 +40,11 @@ public class WarpsPageManager {
                 .size(InventorySize.MEDIUM)
                 .type(InventoryType.NORMAL)
                 .pages(5);
+
+        this.init();
     }
 
-    public void RenderWarpsPage() {
+    private void init() {
         this.DeleteButton = MainGUI.CustomItem("<red>Eliminar Warp", "<gray>Elimina un warp existente.", Material.BARRIER, 1)
                 .insert(3).button(true).draggable(false);
 
@@ -60,7 +64,9 @@ public class WarpsPageManager {
                 .insert(1)
                 .draggable(false)
                 .button(true);
+    }
 
+    public void RenderWarpsPage() {
         this.execute();
     }
 
@@ -74,13 +80,14 @@ public class WarpsPageManager {
         this.DeleteButton.onClick(event -> {
             Player player = event.getPlayer();
 
-            for (NextItem item : NextGUI.getItems()) {
+            for (NextItem item : new ArrayList<>(NextGUI.getItems())) {
+                if (item.equals(this.BackButton)) continue;
                 item.remove();
             }
 
-            int count = 0;
-            for (WarpPoint wp : group.getWarpPoints()) {
-                NextItem option = NextGUI.CustomItem("Delete Warp: " + wp.name, "Eliminar el warp", Material.RED_WOOL, count)
+            for (int i = 0; i < group.getWarpPoints().size(); i++) {
+                WarpPoint wp = group.getWarpPoints().get(i);
+                NextItem option = NextGUI.CustomItem("Delete Warp: " + wp.name, "Eliminar el warp", Material.RED_WOOL, i)
                         .draggable(false)
                         .button(true)
                         .insert(1);
@@ -98,8 +105,6 @@ public class WarpsPageManager {
                     });
                     option.remove();
                 });
-
-                count++;
             }
 
             MainGUI.close(player.getUniqueId());

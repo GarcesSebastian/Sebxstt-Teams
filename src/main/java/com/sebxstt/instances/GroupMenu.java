@@ -1,6 +1,5 @@
 package com.sebxstt.instances;
 
-import com.sebxstt.functions.utils.InPlayer;
 import com.sebxstt.managers.menus.InfoPageManager;
 import com.sebxstt.managers.menus.WarpsPageManager;
 import com.sebxstt.nextinventory.NextInventory;
@@ -13,8 +12,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static com.sebxstt.index.mainData;
 
 public class GroupMenu {
     public UUID id;
@@ -111,6 +108,7 @@ public class GroupMenu {
 
     private void execute() {
         this.InfoButton.onClick(event -> {
+            Player player = event.getPlayer();
             InfoPageManager.RenderInfoPage(this.group, NextGUI);
             NextGUI.current(2);
             this.BackButton.move(20, 2);
@@ -152,7 +150,8 @@ public class GroupMenu {
             System.out.println("[GroupMenu] Role Group to " + player.getName());
         });
 
-        this.BackButton.onClick(player -> {
+        this.BackButton.onClick(event -> {
+            Player player = event.getPlayer();
             NextGUI.current(1);
         });
     }
