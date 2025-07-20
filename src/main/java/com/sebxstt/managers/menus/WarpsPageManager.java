@@ -3,7 +3,6 @@ package com.sebxstt.managers.menus;
 import com.sebxstt.functions.utils.InPlayer;
 import com.sebxstt.instances.PlayersGroup;
 import com.sebxstt.instances.WarpPoint;
-import com.sebxstt.nextinventory.InventoryHelper;
 import com.sebxstt.nextinventory.NextInventory;
 import com.sebxstt.nextinventory.enums.InventorySize;
 import com.sebxstt.nextinventory.enums.InventoryType;
@@ -20,9 +19,8 @@ import static com.sebxstt.providers.DataStoreProvider.DS;
 
 public class WarpsPageManager {
     private UUID group;
-    private NextInventory MainGUI;
-
-    private NextInventory NextGUI;
+    private final NextInventory MainGUI;
+    private final NextInventory NextGUI;
 
     // Buttons
     private NextItem DeleteButton;
